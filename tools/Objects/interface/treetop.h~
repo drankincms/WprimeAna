@@ -1,0 +1,340 @@
+//////////////////////////////////////////////////////////
+// This class has been automatically generated on
+// Mon Aug 13 03:17:52 2012 by ROOT version 5.27/06b
+// from TTree treetop/treetop
+// found on file: TTbar_Aug13_all.root
+//////////////////////////////////////////////////////////
+
+#ifndef treetop_h
+#define treetop_h
+
+#include <TROOT.h>
+#include <TChain.h>
+#include <TFile.h>
+#include <TString.h>
+#include "TLepton.h"
+#include <stdio.h>
+
+
+class treetop {
+ public :
+   struct SortByPt {
+       bool operator()(const TLepton *e1, const TLepton *e2) {
+           return (e1->lv.Pt() > e2->lv.Pt());
+       }
+   };
+   struct SortJetsByPt {
+       bool operator()(const TJet *e1, const TJet *e2) {
+           return (e1->lv.Pt() > e2->lv.Pt());
+       }
+   };
+
+
+  TTree          *fChain;   //!pointer to the analyzed TTree or TChain
+  Int_t           fCurrent; //!current Tree number in a TChain
+  
+  vector <TLepton*> allMuons, allElecs, goodMuons, goodElecs, looseMuons, looseElecs, lntMuons, lntElecs;
+  vector <TJet*> allAK5Jets, allCA8Jets, allCAWJets, allCATopJets, allJets; //allJets is obsolete! It's really all AK5 jets
+  vector <TJet*> allCleanedLeptons;
+  // The goodLeptons and leptonsForFakes are ordered in pT and overlaps are cleaned (dR<0.1)
+  vector <TLepton*> goodLeptons, leptonsForFakes;
+  
+  vector <TJet*> goodCATopJets(const vector <TLepton*> & leptons);
+  vector <TJet*> goodCAWJets(const vector <TLepton*> & leptons, const vector <TJet*> & selCATopJets);
+  vector <TJet*> goodCA8Jets(const vector <TLepton*> & leptons, const vector <TJet*> & selCATopJets, const vector <TJet*> & selCAWJets);
+  vector <TJet*> goodAK5Jets(const vector <TLepton*> & leptons, const vector <TJet*> & selCATopJets, const vector <TJet*> & selCAWJets);
+  vector <TJet*> goodJets(const vector <TLepton*> & leptons); //goodJets is really good AK5 jets without considering CA jets
+  //int goodLeptons();
+
+  void addCleanedLeptons(const vector <TLepton*> & leptons, const vector <TJet*> & cleanedLeptons, 
+			 const vector <TJet*> & selCATopJets, const vector <TJet*> & selCAWJets, vector <TJet*> & selAK5Jets);
+
+  void addCleanedLeptons(const vector <TLepton*> & leptons, const vector <TJet*> & cleanedLeptons, 
+			 vector <TJet*> & selAK5Jets);
+  
+  //to remove:
+  Int_t goodLumi;
+//
+  Int_t           run, lumi, event;
+  
+  Int_t           nPV;
+  Int_t           nCATopJet;
+  Int_t           nCAWJet;
+  Int_t           nAK5Jet;
+  Int_t           nCA8Jet;
+  Int_t           nPFjet;
+  Int_t           nElectrons;
+  Int_t           nMuons;
+  Int_t           nCleanedMu;
+  Int_t           nCleanedEl;
+
+  Int_t           event_flavor; // Flavour of the leading jet
+  Int_t           n_Bjets, n_Cjets, n_Lightjets;
+  
+// Pile-up reweighting: 
+  Double_t        weight_PU_3D_73mb;
+  Double_t        weight_PU_3D;
+  Double_t        weight_PU_3D_shiftDown_73mb;
+  Double_t        weight_PU_3D_shiftDown;
+  Double_t        weight_PU_3D_shiftUp_73mb;
+  Double_t        weight_PU_3D_shiftUp;
+  Double_t        weight_PU_RootFile;
+  Double_t        weight_PU;
+
+// MET
+  Double_t        PF_met_phi;
+  Double_t        PF_met_pt;
+  Double_t        PF_met_px;
+  Double_t        PF_met_py;
+  Double_t        corr_met;
+  Double_t        corr_met_phi;
+
+
+// Primary vertex
+  Double_t        Nchi2PV;
+  Double_t        PV1Z;
+  Double_t        PV2Z;
+  Double_t        PV3Z;
+  Double_t        PV4Z;
+  Double_t        chi2PV;
+  Double_t        ndofPV;
+
+   // Declaration of leaf types
+   Int_t           bunchXing_PileUpCalc;
+   Int_t           dataEE;
+   Int_t           dataEM;
+   Int_t           dataMM;
+   Int_t           event_CommonCalc;
+   Int_t           nAllJets_CommonCalc;
+   Int_t           nInteractions_PileUpCalc;
+   Double_t        nTrueInteractions_PileUpCalc;
+   Int_t           nLooseMuons_CommonCalc;
+   Int_t           nSelBtagJets_CommonCalc;
+   Int_t           nSelElectrons_CommonCalc;
+   Int_t           nSelJets_CommonCalc;
+   Int_t           nTightMuons_CommonCalc;
+   Int_t           run_CommonCalc;
+   Int_t           trigEE;
+   Int_t           trigEM;
+   Int_t           trigMM;
+   vector<int>     *AK5JetTBag;
+   vector<int>     *CAWDaughterMotherIndex;
+   vector<int>     *CAWJetIndex;
+   vector<int>     *CAWJetnDaughters;
+   vector<int>     *CATopDaughterMotherIndex;
+   vector<int>     *CATopJetIndex;
+   vector<int>     *CATopJetnDaughters;
+   vector<int>     *elChargeConsistent;
+   vector<int>     *elCharge;
+   vector<int>     *elIsEBEE;
+   vector<int>     *elMHits;
+   vector<int>     *elNotConversion;
+   vector<int>     *elQuality;
+   vector<int>     *elVtxFitConv;
+   vector<int>     *genID;
+   vector<int>     *genIndex;
+   vector<int>     *genMotherID;
+   vector<int>     *genMotherIndex;
+   vector<int>     *genStatus;
+   vector<int>     *muCharge;
+   vector<int>     *muGlobal;
+   vector<int>     *muNMatchedStations;
+   vector<int>     *muNTrackerLayers;
+   vector<int>     *muNValMuHits;
+   vector<int>     *muNValPixelHits;
+   vector<double>  *AK5JetEnergy;
+   vector<double>  *AK5JetEta;
+   vector<double>  *AK5JetPhi;
+   vector<double>  *AK5JetPt;
+   vector<double>  *CA8JetEnergy;
+   vector<double>  *CA8JetEta;
+   vector<double>  *CA8JetPhi;
+   vector<double>  *CA8JetPt;
+   vector<double>  *CAWDaughterEnergy;
+   vector<double>  *CAWDaughterEta;
+   vector<double>  *CAWDaughterPhi;
+   vector<double>  *CAWDaughterPt;
+   vector<double>  *CAWJetEnergy;
+   vector<double>  *CAWJetEta;
+   vector<double>  *CAWJetMass;
+   vector<double>  *CAWJetPhi;
+   vector<double>  *CAWJetPt;
+   vector<double>  *CATopDaughterEnergy;
+   vector<double>  *CATopDaughterEta;
+   vector<double>  *CATopDaughterPhi;
+   vector<double>  *CATopDaughterPt;
+   vector<double>  *CATopJetEnergy;
+   vector<double>  *CATopJetEta;
+   vector<double>  *CATopJetMinPairMass;
+   vector<double>  *CATopJetPhi;
+   vector<double>  *CATopJetPt;
+   vector<double>  *CATopJetTopMass;
+   vector<double>  *elD0;
+   vector<double>  *elDZ;
+   vector<double>  *elDeta;
+   vector<double>  *elDphi;
+   vector<double>  *elDxy;
+   vector<double>  *elEnergy;
+   vector<double>  *elEta;
+   vector<double>  *elHoE;
+   vector<double>  *elOoemoop;
+   vector<double>  *elPhi;
+   vector<double>  *elPt;
+   vector<double>  *elRelIso;
+   vector<double>  *elSihih;
+   vector<double>  *genEnergy;
+   vector<double>  *genEta;
+   vector<double>  *genPhi;
+   vector<double>  *genPt;
+   vector<double>  *muChi2;
+   vector<double>  *muDxy;
+   vector<double>  *muDz;
+   vector<double>  *muEnergy;
+   vector<double>  *muEta;
+   vector<double>  *muPhi;
+   vector<double>  *muPt;
+   vector<double>  *muRelIso;
+   vector<double>  *cleanedMuEnergy;
+   vector<double>  *cleanedMuEta;
+   vector<double>  *cleanedMuPhi;
+   vector<double>  *cleanedMuPt;
+   vector<double>  *cleanedElEnergy;
+   vector<double>  *cleanedElEta;
+   vector<double>  *cleanedElPhi;
+   vector<double>  *cleanedElPt;
+
+   // List of branches
+   TBranch        *b_bunchXing_PileUpCalc;   //!
+   TBranch        *b_dataEE_DileptonCalc;   //!
+   TBranch        *b_dataEM_DileptonCalc;   //!
+   TBranch        *b_dataMM_DileptonCalc;   //!
+   TBranch        *b_event_CommonCalc;   //!
+   TBranch        *b_lumi_CommonCalc;   //!
+   TBranch        *b_nAllJets_CommonCalc;   //!
+   TBranch        *b_nInteractions_PileUpCalc;   //!
+   TBranch        *b_nTrueInteractions_PileUpCalc;   //!
+   TBranch        *b_nLooseMuons_CommonCalc;   //!
+   TBranch        *b_nSelBtagJets_CommonCalc;   //!
+   TBranch        *b_nSelElectrons_CommonCalc;   //!
+   TBranch        *b_nSelJets_CommonCalc;   //!
+   TBranch        *b_nTightMuons_CommonCalc;   //!
+   TBranch        *b_run_CommonCalc;   //!
+   TBranch        *b_trigEE_DileptonCalc;   //!
+   TBranch        *b_trigEM_DileptonCalc;   //!
+   TBranch        *b_trigMM_DileptonCalc;   //!
+   TBranch        *b_corr_met_DileptonCalc;   //!
+   TBranch        *b_corr_met_phi_DileptonCalc;   //!
+   TBranch        *b_met_DileptonCalc;   //!
+   TBranch        *b_met_phi_DileptonCalc;   //!
+   TBranch        *b_weight_PU_PileUpCalc;   //!
+   TBranch        *b_AK5JetTBag_DileptonCalc;   //!
+   TBranch        *b_CAWDaughterMotherIndex_DileptonCalc;   //!
+   TBranch        *b_CAWJetIndex_DileptonCalc;   //!
+   TBranch        *b_CAWJetnDaughters_DileptonCalc;   //!
+   TBranch        *b_CATopDaughterMotherIndex_DileptonCalc;   //!
+   TBranch        *b_CATopJetIndex_DileptonCalc;   //!
+   TBranch        *b_CATopJetnDaughters_DileptonCalc;   //!
+   TBranch        *b_elChargeConsistent_DileptonCalc;   //!
+   TBranch        *b_elCharge_DileptonCalc;   //!
+   TBranch        *b_elIsEBEE_DileptonCalc;   //!
+   TBranch        *b_elMHits_DileptonCalc;   //!
+   TBranch        *b_elNotConversion_DileptonCalc;   //!
+   TBranch        *b_elQuality_DileptonCalc;   //!
+   TBranch        *b_elVtxFitConv_DileptonCalc;   //!
+   TBranch        *b_genID_DileptonCalc;   //!
+   TBranch        *b_genIndex_DileptonCalc;   //!
+   TBranch        *b_genMotherID_DileptonCalc;   //!
+   TBranch        *b_genMotherIndex_DileptonCalc;   //!
+   TBranch        *b_genStatus_DileptonCalc;   //!
+   TBranch        *b_muCharge_DileptonCalc;   //!
+   TBranch        *b_muGlobal_DileptonCalc;   //!
+   TBranch        *b_muNMatchedStations_DileptonCalc;   //!
+   TBranch        *b_muNTrackerLayers_DileptonCalc;   //!
+   TBranch        *b_muNValMuHits_DileptonCalc;   //!
+   TBranch        *b_muNValPixelHits_DileptonCalc;   //!
+   TBranch        *b_AK5JetEnergy_DileptonCalc;   //!
+   TBranch        *b_AK5JetEta_DileptonCalc;   //!
+   TBranch        *b_AK5JetPhi_DileptonCalc;   //!
+   TBranch        *b_AK5JetPt_DileptonCalc;   //!
+   TBranch        *b_CA8JetEnergy_DileptonCalc;   //!
+   TBranch        *b_CA8JetEta_DileptonCalc;   //!
+   TBranch        *b_CA8JetPhi_DileptonCalc;   //!
+   TBranch        *b_CA8JetPt_DileptonCalc;   //!
+   TBranch        *b_CAWDaughterEnergy_DileptonCalc;   //!
+   TBranch        *b_CAWDaughterEta_DileptonCalc;   //!
+   TBranch        *b_CAWDaughterPhi_DileptonCalc;   //!
+   TBranch        *b_CAWDaughterPt_DileptonCalc;   //!
+   TBranch        *b_CAWJetEnergy_DileptonCalc;   //!
+   TBranch        *b_CAWJetEta_DileptonCalc;   //!
+   TBranch        *b_CAWJetMass_DileptonCalc;   //!
+   TBranch        *b_CAWJetPhi_DileptonCalc;   //!
+   TBranch        *b_CAWJetPt_DileptonCalc;   //!
+   TBranch        *b_CATopDaughterEnergy_DileptonCalc;   //!
+   TBranch        *b_CATopDaughterEta_DileptonCalc;   //!
+   TBranch        *b_CATopDaughterPhi_DileptonCalc;   //!
+   TBranch        *b_CATopDaughterPt_DileptonCalc;   //!
+   TBranch        *b_CATopJetEnergy_DileptonCalc;   //!
+   TBranch        *b_CATopJetEta_DileptonCalc;   //!
+   TBranch        *b_CATopJetMinPairMass_DileptonCalc;   //!
+   TBranch        *b_CATopJetPhi_DileptonCalc;   //!
+   TBranch        *b_CATopJetPt_DileptonCalc;   //!
+   TBranch        *b_CATopJetTopMass_DileptonCalc;   //!
+   TBranch        *b_elD0_DileptonCalc;   //!
+   TBranch        *b_elDZ_DileptonCalc;   //!
+   TBranch        *b_elDeta_DileptonCalc;   //!
+   TBranch        *b_elDphi_DileptonCalc;   //!
+   TBranch        *b_elDxy_DileptonCalc;   //!
+   TBranch        *b_elEnergy_DileptonCalc;   //!
+   TBranch        *b_elEta_DileptonCalc;   //!
+   TBranch        *b_elHoE_DileptonCalc;   //!
+   TBranch        *b_elOoemoop_DileptonCalc;   //!
+   TBranch        *b_elPhi_DileptonCalc;   //!
+   TBranch        *b_elPt_DileptonCalc;   //!
+   TBranch        *b_elRelIso_DileptonCalc;   //!
+   TBranch        *b_elSihih_DileptonCalc;   //!
+   TBranch        *b_genEnergy_DileptonCalc;   //!
+   TBranch        *b_genEta_DileptonCalc;   //!
+   TBranch        *b_genPhi_DileptonCalc;   //!
+   TBranch        *b_genPt_DileptonCalc;   //!
+   TBranch        *b_muChi2_DileptonCalc;   //!
+   TBranch        *b_muDxy_DileptonCalc;   //!
+   TBranch        *b_muDz_DileptonCalc;   //!
+   TBranch        *b_muEnergy_DileptonCalc;   //!
+   TBranch        *b_muEta_DileptonCalc;   //!
+   TBranch        *b_muPhi_DileptonCalc;   //!
+   TBranch        *b_muPt_DileptonCalc;   //!
+   TBranch        *b_muRelIso_DileptonCalc;   //!
+   TBranch        *b_cleanedMuEnergy_DileptonCalc;   //!
+   TBranch        *b_cleanedMuEta_DileptonCalc;   //!
+   TBranch        *b_cleanedMuPhi_DileptonCalc;   //!
+   TBranch        *b_cleanedMuPt_DileptonCalc;   //!
+   TBranch        *b_cleanedElEnergy_DileptonCalc;   //!
+   TBranch        *b_cleanedElEta_DileptonCalc;   //!
+   TBranch        *b_cleanedElPhi_DileptonCalc;   //!
+   TBranch        *b_cleanedElPt_DileptonCalc;   //!
+
+   TBranch        *b_nPV_DileptonCalc;   //!
+
+ 
+   treetop(TTree *tree);
+   treetop(const TString &filename);
+   virtual ~treetop();
+   virtual Int_t    Cut(Long64_t entry);
+   virtual Int_t    GetEntry(Long64_t entry);
+   virtual Long64_t LoadTree(Long64_t entry);
+   virtual void     Init(TTree *tree);
+   virtual void     Loop();
+   virtual Bool_t   Notify();
+   virtual void     Show(Long64_t entry = -1);
+   double getEntries();
+   void printEvent(int jentry);
+   void printEvent();
+   void checkLeptons();
+   double entries;
+};
+
+#endif
+
+#ifdef treetop_cxx
+
+#endif // #ifdef treetop_cxx
