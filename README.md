@@ -1,6 +1,6 @@
-###Analysis code for W' -> tb (leptonic)
+# Analysis code for W' -> tb (leptonic)
 
-##Setup:
+## Setup:
 
 ```
 source setup.csh
@@ -12,7 +12,7 @@ make clean
 make all
 ```
 
-##Useful Scripts:
+## Useful Scripts:
 
 - `AnalyzerSubmit` [for bulk condor submission]
   - Uses `WprimeAnalyzer_Slim_Opt.C`, which is the actual script that implements cuts, applies weighting, etc. Exceptions are `_LHE` scripts for PDF uncertainties and `TopPt` scripts for Top Pt reweighting
