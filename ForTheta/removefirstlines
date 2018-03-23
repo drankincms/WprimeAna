@@ -1,0 +1,2 @@
+cp *bayesian_limits*.txt backup/
+sed -i -e "1d" *bayesian_limits*.txt

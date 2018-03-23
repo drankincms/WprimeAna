@@ -1,0 +1,76 @@
+#!/bin/csh
+#
+# Template of the shell script for submitting a CONDOR job
+#
+# Need to be substituted:
+#    - C M S S W B A S E - local release base ($CMSSW_BASE)
+#    - D I R E C T O R Y - condor work and output dir
+#    - P R E F I X - some generic name for the set of jobs (like ttbar, wjets)
+#    - J O B I D  - job number
+#
+#
+#_____ setup the environment ____________________________________________
+#
+#setenv PATH /bin:/usr/bin:/usr/local/bin:/usr/krb5/bin:/usr/afsws/bin:/usr/krb5/bin/aklog
+
+#source /uscmst1/prod/sw/cms/cshrc prod
+#cd CMSSWBASE/src/
+#pwd
+source /cvmfs/cms.cern.ch/cmsset_default.csh
+setenv SCRAM_ARCH slc6_amd64_gcc530
+cmsrel CMSSWVERSION
+cd CMSSWVERSION/src/
+eval `scram runtime -csh`
+cmsenv
+xrdcp root://cmseos.fnal.gov//store/user/drankin/thetabase.tar ./thetabase.tar
+tar -xvf thetabase.tar
+cd theta/utils2/test/Wprime/WprimeRight
+
+#
+#_____ check if we are running on a condor or on fbsng batch system _____
+#
+if (${?_CONDOR_SCRATCH_DIR}) then
+  set BSCRATCH=${_CONDOR_SCRATCH_DIR}
+  /bin/cat /etc/redhat-release
+  echo "Batch system: Condor"
+  echo "SCRAM_ARCH:   "${SCRAM_ARCH}
+else if (${?FBS_SCRATCH}) then
+  set BSCRATCH=$FBS_SCRATCH
+  /bin/cat /etc/redhat-release
+  echo "Batch system: FBSNG"
+  echo "SCRAM_ARCH:   "${SCRAM_ARCH}
+else
+    echo "Unknown Batch System"
+    exit
+endif
+
+cd ../RootFiles_For2DLimits/
+xrdcp root://cmseos.fnal.gov//store/user/drankin/thetaroot.tar ./thetaroot.tar
+tar -xvf thetaroot.tar
+cd -
+xrdcp root://cmseos.fnal.gov//store/user/drankin/theta_2d.tar ./theta_2d.tar
+tar -xvf theta_2d.tar
+ls
+
+python WprimeGeneralizedCoupling-1and2.py --ar=AR --al=AL
+hadd -f Wprime_Histos_combined-AL-AR.root Wprime_Histos_mu-AL-AR.root Wprime_Histos_elec-AL-AR.root
+mkdir COMBINED/
+mkdir MUONS/
+mkdir ELECTRONS/
+mv Wprime_Histos_combined-AL-AR.root COMBINED/
+mv Wprime_Histos_mu-AL-AR.root MUONS/
+mv Wprime_Histos_elec-AL-AR.root ELECTRONS/
+cp removefirstlines DIRNAME
+cd DIRNAME
+sed 's/AXXL/AL/g' ../theta_templ.py > Wprime_Histos_CHAN-AL-AR.py
+sed -i 's/AXXR/AR/g' Wprime_Histos_CHAN-AL-AR.py
+sed -i 's/ELXXCOM/ELCOM/g' Wprime_Histos_CHAN-AL-AR.py
+sed -i 's/MUXXCOM/MUCOM/g' Wprime_Histos_CHAN-AL-AR.py
+sed -i 's/NAME/CHAN/g' Wprime_Histos_CHAN-AL-AR.py
+../../../../theta-auto.py Wprime_Histos_CHAN-AL-AR.py
+
+source removefirstlines
+
+#move output to eos
+xrdcp -f `ls *observed*.txt` EOSOUT/DIRNAME/bayesian_limits_observed_AL-AR.txt
+xrdcp -f `ls *expected*.txt` EOSOUT/DIRNAME/bayesian_limits_expected_AL-AR.txt
